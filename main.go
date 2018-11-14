@@ -19,19 +19,18 @@ type Car struct {
 var cars []Car
 
 func main() {
-		router := mux.NewRouter()
+		router, port, path, pathID := mux.NewRouter(), ":8000", "/api/cars", "/api/cars/{id}"
 		cars = append(cars,
 				Car{ID: "1", Year: 2017, Make: "Subaru", Model: "Impreza"},
 				Car{ID: "2", Year: 2001, Make: "Volvo", Model: "S60"},
 				Car{ID: "3", Year: 1998, Make: "Ford", Model: "Escort"},
 		)
-		pathID := "/api/cars/{id}"
-		router.HandleFunc("/api/cars", getCars).Methods("GET")
+		router.HandleFunc(path, getCars).Methods("GET")
 		router.HandleFunc(pathID, getCar).Methods("GET")
 		router.HandleFunc(pathID, createCar).Methods("POST")
 		router.HandleFunc(pathID, updateCar).Methods("PUT")
 		router.HandleFunc(pathID, deleteCar).Methods("DELETE")
-		log.Fatal(http.ListenAndServe(":8000", router))
+		log.Fatal(http.ListenAndServe(port, router))
 }
 
 func getCars(w http.ResponseWriter, r *http.Request) {
