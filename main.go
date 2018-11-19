@@ -30,7 +30,12 @@ func main() {
 		router.HandleFunc(pathID, createCar).Methods("POST")
 		router.HandleFunc(pathID, updateCar).Methods("PUT")
 		router.HandleFunc(pathID, deleteCar).Methods("DELETE")
-		log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", router))
+		go log.Fatal(http.ListenAndServeTLS(port, "cert.pem", "key.pem", router))
+		log.Fatal(http.ListenAndServe(port, http.HandlerFunc(redirectToHTTPS)))
+}
+
+func redirectToHTTPS(w http.ResponseWriter, r *http.Request) {
+    http.Redirect(w, r, "https://localhost:8000" + r.RequestURI, http.StatusMovedPermanently)
 }
 
 func getCars(w http.ResponseWriter, r *http.Request) {
